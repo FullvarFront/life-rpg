@@ -29,7 +29,7 @@ export default async function Home() {
   // Последние действия.
   const { data: actions } = await supabase
     .from("actions")
-    .select("id, text, difficulty, xp, created_at")
+    .select("id, text, difficulty, xp, attribute, created_at")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
     .limit(10);
@@ -50,19 +50,27 @@ export default async function Home() {
     text: a.text,
     difficulty: a.difficulty as Difficulty,
     xp: a.xp,
+    attribute: (a.attribute as Attribute | null) ?? null,
     createdAt: a.created_at,
   }));
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-10">
-      <header className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h1 className="text-3xl font-bold tracking-tight">Life RPG</h1>
-          <p className="mt-1 truncate text-xs text-zinc-500 dark:text-zinc-400">
-            {user.email}
-          </p>
+    <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      <header className="mb-8 flex items-center justify-between gap-3">
+        <div className="flex items-baseline gap-2">
+          <span className="font-display text-2xl font-bold tracking-tight text-text">
+            Life
+          </span>
+          <span className="font-display text-2xl font-bold tracking-tight text-accent">
+            RPG
+          </span>
         </div>
-        <SignOutButton />
+        <div className="flex items-center gap-3">
+          <span className="hidden truncate text-xs text-muted sm:inline">
+            {user.email}
+          </span>
+          <SignOutButton />
+        </div>
       </header>
 
       <GameBoard

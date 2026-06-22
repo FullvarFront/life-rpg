@@ -1,14 +1,20 @@
+import type { LucideIcon } from "lucide-react";
 import { getPlayerState } from "@/game/level";
 
 export function AttributeBar({
   name,
   xp,
-  colorClass,
+  Icon,
+  iconClass,
+  barClass,
 }: {
   name: string;
   xp: number;
-  /** Статичный Tailwind-класс заливки, напр. "bg-attr-intellect". */
-  colorClass: string;
+  Icon: LucideIcon;
+  /** Класс цвета иконки, напр. "text-attr-intellect". */
+  iconClass: string;
+  /** Статичный класс заливки полосы, напр. "bg-attr-intellect". */
+  barClass: string;
 }) {
   const { level, xpIntoLevel, xpForNextLevel } = getPlayerState(xp);
   const percent =
@@ -18,15 +24,16 @@ export function AttributeBar({
 
   return (
     <div className="w-full">
-      <div className="mb-1 flex items-baseline justify-between gap-2">
-        <span className="text-sm font-medium">{name}</span>
-        <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          Ур. {level} · {xpIntoLevel}/{xpForNextLevel}
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <span className="flex items-center gap-2 text-sm text-text">
+          <Icon className={`h-4 w-4 ${iconClass}`} aria-hidden />
+          {name}
         </span>
+        <span className="font-display text-xs text-muted">Ур. {level}</span>
       </div>
-      <div className="h-2.5 w-full overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-elevated">
         <div
-          className={`h-full rounded-full transition-[width] duration-500 ease-out ${colorClass}`}
+          className={`h-full rounded-full transition-[width] duration-700 ease-out ${barClass}`}
           style={{ width: `${percent}%` }}
         />
       </div>

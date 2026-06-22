@@ -1,3 +1,5 @@
+import { Flame } from "lucide-react";
+
 function dayWord(n: number): string {
   const mod10 = n % 10;
   const mod100 = n % 100;
@@ -14,17 +16,22 @@ export function DisciplineCard({
   longestStreak: number;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-zinc-900">
-      <span className="text-3xl" aria-hidden>
-        🔥
-      </span>
+    <div className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-6">
+      <Flame
+        className="h-10 w-10 shrink-0 text-streak"
+        style={{ filter: "drop-shadow(0 0 12px rgba(245, 158, 11, 0.55))" }}
+        aria-hidden
+      />
       <div className="min-w-0">
-        <p className="text-lg font-bold text-streak">
-          {currentStreak} {dayWord(currentStreak)} подряд
+        <p className="leading-none">
+          <span className="font-display text-3xl font-bold text-text">
+            {currentStreak}
+          </span>{" "}
+          <span className="text-sm text-muted">
+            {dayWord(currentStreak)} подряд
+          </span>
         </p>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Рекорд: {longestStreak}
-        </p>
+        <p className="mt-1.5 text-xs text-muted">Рекорд: {longestStreak}</p>
       </div>
     </div>
   );

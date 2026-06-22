@@ -78,13 +78,19 @@ export default function LoginPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-sm flex-col justify-center gap-6 px-4 py-10">
       <header className="text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Life RPG</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="font-display text-3xl font-bold tracking-tight">
+          <span className="text-text">Life</span>{" "}
+          <span className="text-accent">RPG</span>
+        </h1>
+        <p className="mt-1 text-sm text-muted">
           {mode === "signin" ? "Вход в аккаунт" : "Регистрация"}
         </p>
       </header>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-6"
+      >
         <input
           type="email"
           value={email}
@@ -92,7 +98,7 @@ export default function LoginPage() {
           disabled={loading}
           autoComplete="email"
           placeholder="email@example.com"
-          className="rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none focus:border-xp disabled:opacity-60 dark:border-white/15 dark:bg-zinc-900"
+          className="rounded-xl border border-border bg-elevated px-4 py-3 text-sm text-text outline-none transition-colors placeholder:text-muted focus:border-accent disabled:opacity-60"
         />
         <input
           type="password"
@@ -101,29 +107,32 @@ export default function LoginPage() {
           disabled={loading}
           autoComplete={mode === "signin" ? "current-password" : "new-password"}
           placeholder="Пароль (минимум 6 символов)"
-          className="rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none focus:border-xp disabled:opacity-60 dark:border-white/15 dark:bg-zinc-900"
+          className="rounded-xl border border-border bg-elevated px-4 py-3 text-sm text-text outline-none transition-colors placeholder:text-muted focus:border-accent disabled:opacity-60"
         />
 
         <button
           type="submit"
           disabled={!canSubmit}
-          className="flex items-center justify-center gap-2 rounded-lg bg-xp px-4 py-2 text-sm font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-1 flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-3 text-sm font-semibold text-bg transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {loading && (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-bg/40 border-t-bg" />
           )}
           {mode === "signin" ? "Войти" : "Зарегистрироваться"}
         </button>
       </form>
 
       {error && (
-        <p className="text-center text-sm text-red-500" role="alert">
+        <p
+          className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-center text-sm text-red-400"
+          role="alert"
+        >
           {error}
         </p>
       )}
       {notice && (
         <p
-          className="rounded-lg bg-amber-100 px-3 py-2 text-center text-sm text-amber-800 dark:bg-amber-500/15 dark:text-amber-300"
+          className="rounded-xl border border-streak/30 bg-streak/10 px-4 py-2.5 text-center text-sm text-streak"
           role="status"
         >
           {notice}
@@ -137,7 +146,7 @@ export default function LoginPage() {
           setError(null);
           setNotice(null);
         }}
-        className="text-center text-sm text-zinc-500 underline-offset-2 hover:underline dark:text-zinc-400"
+        className="text-center text-sm text-muted underline-offset-2 transition-colors hover:text-text hover:underline"
       >
         {mode === "signin"
           ? "Нет аккаунта? Зарегистрироваться"

@@ -13,6 +13,8 @@ export interface ActionEntry {
   difficulty: Difficulty;
   /** Начисленный опыт. */
   xp: number;
+  /** Характеристика действия; null для рутины/быта. */
+  attribute: Attribute | null;
   /** ISO-дата создания. */
   createdAt: string;
 }

@@ -9,15 +9,15 @@ export function XpBar({ totalXp }: { totalXp: number }) {
 
   return (
     <div className="w-full">
-      <div className="mb-1.5 flex items-baseline justify-between">
-        <span className="text-sm font-semibold">Уровень {level}</span>
-        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+      <div className="mb-2 flex items-baseline justify-between text-xs">
+        <span className="text-muted">До уровня {level + 1}</span>
+        <span className="font-display font-medium text-text">
           {xpIntoLevel} / {xpForNextLevel} XP
         </span>
       </div>
-      <div className="h-3 w-full overflow-hidden rounded-full bg-black/10 dark:bg-white/10">
+      <div className="h-2.5 w-full overflow-hidden rounded-full bg-elevated">
         <div
-          className="h-full rounded-full bg-xp transition-[width] duration-500 ease-out"
+          className="h-full rounded-full bg-accent transition-[width] duration-700 ease-out"
           style={{ width: `${percent}%` }}
         />
       </div>

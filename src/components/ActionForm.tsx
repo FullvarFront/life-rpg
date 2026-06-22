@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { SendHorizontal } from "lucide-react";
 import type { EvaluateResponse } from "@/types/game";
 
 export function ActionForm({
@@ -49,7 +50,9 @@ export function ActionForm({
       setText("");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Что-то пошло не так. Попробуйте ещё раз.",
+        err instanceof Error
+          ? err.message
+          : "Что-то пошло не так. Попробуйте ещё раз.",
       );
     } finally {
       setLoading(false);
@@ -57,41 +60,56 @@ export function ActionForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          disabled={loading}
-          maxLength={300}
-          placeholder="Что ты сделал? Напр. «час учил английский»"
-          className="flex-1 rounded-lg border border-black/15 bg-white px-3 py-2 text-sm outline-none focus:border-xp disabled:opacity-60 dark:border-white/15 dark:bg-zinc-900"
-        />
-        <button
-          type="submit"
-          disabled={!canSubmit}
-          className="flex items-center gap-2 rounded-lg bg-xp px-4 py-2 text-sm font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {loading && (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
-          )}
-          {loading ? "Оцениваю…" : "Выполнить"}
-        </button>
-      </div>
-      {notice && (
-        <p
-          className="rounded-lg bg-amber-100 px-3 py-2 text-sm text-amber-800 dark:bg-amber-500/15 dark:text-amber-300"
-          role="status"
-        >
-          {notice}
-        </p>
-      )}
-      {error && (
-        <p className="text-sm text-red-500" role="alert">
-          {error}
-        </p>
-      )}
-    </form>
+    <div className="rounded-2xl border border-border bg-surface p-6">
+      <h2 className="font-display text-lg font-semibold text-text">
+        Что ты сделал?
+      </h2>
+      <p className="mt-1 text-sm text-muted">
+        Опиши действие — ИИ оценит его и начислит опыт.
+      </p>
+
+      <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            disabled={loading}
+            maxLength={300}
+            placeholder="Напр. «час учил английский»"
+            className="flex-1 rounded-xl border border-border bg-elevated px-4 py-3 text-sm text-text outline-none transition-colors placeholder:text-muted focus:border-accent disabled:opacity-60"
+          />
+          <button
+            type="submit"
+            disabled={!canSubmit}
+            className="flex items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-bg transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {loading ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-bg/40 border-t-bg" />
+            ) : (
+              <SendHorizontal className="h-4 w-4" aria-hidden />
+            )}
+            {loading ? "Оцениваю…" : "Выполнить"}
+          </button>
+        </div>
+
+        {notice && (
+          <p
+            className="rounded-xl border border-streak/30 bg-streak/10 px-4 py-2.5 text-sm text-streak"
+            role="status"
+          >
+            {notice}
+          </p>
+        )}
+        {error && (
+          <p
+            className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-sm text-red-400"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
+      </form>
+    </div>
   );
 }

@@ -1,42 +1,68 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* Дизайн-токены проекта (используем как bg-xp, bg-difficulty-hard и т.п.) */
 @theme {
-  --color-xp: #22c55e;
-  --color-difficulty-trivial: #94a3b8; /* slate — спокойный */
-  --color-difficulty-easy: #38bdf8; /* sky */
-  --color-difficulty-medium: #facc15; /* amber */
-  --color-difficulty-hard: #f97316; /* orange */
-  --color-difficulty-epic: #a855f7; /* purple — яркий */
+  /* Поверхности и границы */
+  --color-bg: #0d0e12;
+  --color-surface: #16181f;
+  --color-elevated: #1e212b;
+  --color-border: #262a35;
 
-  /* Характеристики и дисциплина */
-  --color-attr-intellect: #3b82f6; /* синий */
-  --color-attr-strength: #ef4444; /* красный */
-  --color-attr-creativity: #a855f7; /* фиолетовый */
-  --color-streak: #f97316; /* оранжевый — огонь */
+  /* Текст */
+  --color-text: #f2f4f8;
+  --color-muted: #8a90a0;
+
+  /* Акцент (общий опыт, главные кнопки) */
+  --color-accent: #34d399;
+  --color-xp: #34d399;
+
+  /* Характеристики */
+  --color-attr-intellect: #3b82f6;
+  --color-attr-strength: #f43f5e;
+  --color-attr-creativity: #a855f7;
+
+  /* Дисциплина-стрик */
+  --color-streak: #f59e0b;
+
+  /* Сложность (пилюли в ленте) */
+  --color-difficulty-trivial: #94a3b8;
+  --color-difficulty-easy: #38bdf8;
+  --color-difficulty-medium: #facc15;
+  --color-difficulty-hard: #fb923c;
+  --color-difficulty-epic: #c084fc;
+
+  /* Шрифты */
+  --font-sans: var(--font-manrope);
+  --font-display: var(--font-space-grotesk);
+
+  /* Анимации */
+  --animate-xp-pop: xp-pop 0.9s ease-out forwards;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes xp-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.9);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px) scale(1);
   }
 }
 
+html {
+  color-scheme: dark;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  background-image: radial-gradient(
+    55rem 26rem at 50% -8%,
+    rgba(52, 211, 153, 0.08),
+    transparent 70%
+  );
+  background-attachment: fixed;
+  color: var(--color-text);
 }
