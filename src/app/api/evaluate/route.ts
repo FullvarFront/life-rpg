@@ -44,36 +44,40 @@ export async function POST(request: Request) {
   try {
     const result = await evaluateAction(text);
 
-    // Невалидно: в БД не пишем, возвращаем текущий total.
+    // Невалидно: в БД не пишем, возвращаем текущее состояние.
     if (!result.valid) {
       const { data: player } = await supabase
         .from("players")
-        .select("total_xp")
+        .select("total_xp, current_streak, longest_streak")
         .eq("user_id", user.id)
         .single();
       return NextResponse.json({
         text,
         ...result,
         totalXp: player?.total_xp ?? 0,
+        currentStreak: player?.current_streak ?? 0,
+        longestStreak: player?.longest_streak ?? 0,
+        attributeXp: null,
       });
     }
 
-    // Валидно: сохраняем действие и атомарно увеличиваем XP.
-    const { error: insertError } = await supabase.from("actions").insert({
-      user_id: user.id,
-      text,
-      difficulty: result.difficulty,
-      xp: result.xp,
+    // Валидно: атомарно пишем действие, XP, стрик и XP характеристики.
+    const { data: state, error: rpcError } = await supabase.rpc("apply_action", {
+      p_text: text,
+      p_difficulty: result.difficulty,
+      p_xp: result.xp,
+      p_attribute: result.attribute,
     });
-    if (insertError) throw insertError;
-
-    const { data: totalXp, error: rpcError } = await supabase.rpc(
-      "increment_xp",
-      { amount: result.xp },
-    );
     if (rpcError) throw rpcError;
 
-    return NextResponse.json({ text, ...result, totalXp: totalXp ?? 0 });
+    return NextResponse.json({
+      text,
+      ...result,
+      totalXp: state?.total_xp ?? 0,
+      currentStreak: state?.current_streak ?? 0,
+      longestStreak: state?.longest_streak ?? 0,
+      attributeXp: state?.attribute_xp ?? null,
+    });
   } catch (error) {
     // Детали наружу не отдаём — только в серверный лог.
     console.error("POST /api/evaluate failed:", error);

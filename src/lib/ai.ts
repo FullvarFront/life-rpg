@@ -1,5 +1,5 @@
 import Groq from "groq-sdk";
-import type { Difficulty, EvaluationResult } from "@/types/game";
+import type { Attribute, Difficulty, EvaluationResult } from "@/types/game";
 import { clampXp } from "@/game/xp";
 
 // Весь код, зависящий от AI-провайдера, живёт ТОЛЬКО здесь.
@@ -16,12 +16,15 @@ const DIFFICULTIES: readonly Difficulty[] = [
   "epic",
 ];
 
+const ATTRIBUTES: readonly Attribute[] = ["intellect", "strength", "creativity"];
+
 /** Результат по умолчанию при сбое парсинга/ответа. */
 const PARSE_FALLBACK: EvaluationResult = {
   valid: false,
   reason: "Не удалось оценить действие, попробуй переформулировать",
   difficulty: "trivial",
   xp: 0,
+  attribute: null,
 };
 
 const SYSTEM_PROMPT = `Ты — судья действий в RPG-игре про реальную жизнь. Игрок вводит, что он сделал, а ты решаешь, засчитать ли это и сколько опыта (XP) дать.
@@ -57,12 +60,26 @@ trivial — мелочь, секунды; easy — лёгкое; medium — за
 trivial 2–9, easy 10–29, medium 30–69, hard 70–129, epic 130–240.
 Выбирай НЕкруглые числа (47, а не 50; 113, а не 100).
 
-Верни строго JSON: { "valid": boolean, "reason": string, "difficulty": "trivial|easy|medium|hard|epic", "xp": целое число }.`;
+ШАГ 5. Выбери характеристику (attribute), которую развивает действие:
+- "intellect" — умственное развитие: учёба, чтение, освоение знаний и навыков ума.
+- "strength" — физическое: спорт, тренировки, физическая активность.
+- "creativity" — творчество: искусство, музыка, письмо, создание чего-либо.
+- null — если это бытовая рутина/самообслуживание (гигиена, еда, уборка) или действие не подходит ни под одну из трёх.
+Если valid=false — attribute всегда null.
+
+Верни строго JSON: { "valid": boolean, "reason": string, "difficulty": "trivial|easy|medium|hard|epic", "xp": целое число, "attribute": "intellect"|"strength"|"creativity"|null }.`;
 
 function isDifficulty(value: unknown): value is Difficulty {
   return (
     typeof value === "string" &&
     (DIFFICULTIES as readonly string[]).includes(value)
+  );
+}
+
+function isAttribute(value: unknown): value is Attribute {
+  return (
+    typeof value === "string" &&
+    (ATTRIBUTES as readonly string[]).includes(value)
   );
 }
 
@@ -95,13 +112,14 @@ export async function evaluateAction(text: string): Promise<EvaluationResult> {
       : "trivial";
     const reason = typeof parsed.reason === "string" ? parsed.reason : "";
 
-    // Невалидно: принудительно xp=0, сложность trivial.
+    // Невалидно: принудительно xp=0, сложность trivial, attribute null.
     if (parsed.valid !== true) {
       return {
         valid: false,
         reason: reason || PARSE_FALLBACK.reason,
         difficulty: "trivial",
         xp: 0,
+        attribute: null,
       };
     }
 
@@ -110,7 +128,10 @@ export async function evaluateAction(text: string): Promise<EvaluationResult> {
       typeof parsed.xp === "number" ? parsed.xp : Number(parsed.xp);
     const xp = clampXp(difficulty, Number.isFinite(rawXp) ? rawXp : 0);
 
-    return { valid: true, reason: "", difficulty, xp };
+    // Характеристика: при невалидном значении — null.
+    const attribute = isAttribute(parsed.attribute) ? parsed.attribute : null;
+
+    return { valid: true, reason: "", difficulty, xp, attribute };
   } catch {
     return PARSE_FALLBACK;
   }

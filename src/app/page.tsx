@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { GameBoard } from "@/components/GameBoard";
 import { SignOutButton } from "@/components/SignOutButton";
-import type { ActionEntry, Difficulty } from "@/types/game";
+import type { ActionEntry, Attribute, Difficulty } from "@/types/game";
 
 export default async function Home() {
   const supabase = await createClient();
@@ -13,13 +13,20 @@ export default async function Home() {
   // Серверная защита: нет сессии → на страницу входа.
   if (!user) redirect("/login");
 
-  // Начальные данные из БД: суммарный XP и последние действия.
+  // Профиль: суммарный XP и стрик.
   const { data: player } = await supabase
     .from("players")
-    .select("total_xp")
+    .select("total_xp, current_streak, longest_streak")
     .eq("user_id", user.id)
     .single();
 
+  // XP по характеристикам (отсутствующие = 0).
+  const { data: attrRows } = await supabase
+    .from("attribute_xp")
+    .select("attribute, xp")
+    .eq("user_id", user.id);
+
+  // Последние действия.
   const { data: actions } = await supabase
     .from("actions")
     .select("id, text, difficulty, xp, created_at")
@@ -27,7 +34,17 @@ export default async function Home() {
     .order("created_at", { ascending: false })
     .limit(10);
 
-  const initialTotalXp = player?.total_xp ?? 0;
+  const attributeXp: Record<Attribute, number> = {
+    intellect: 0,
+    strength: 0,
+    creativity: 0,
+  };
+  for (const row of attrRows ?? []) {
+    if (row.attribute in attributeXp) {
+      attributeXp[row.attribute as Attribute] = row.xp;
+    }
+  }
+
   const initialHistory: ActionEntry[] = (actions ?? []).map((a) => ({
     id: a.id,
     text: a.text,
@@ -49,7 +66,10 @@ export default async function Home() {
       </header>
 
       <GameBoard
-        initialTotalXp={initialTotalXp}
+        initialTotalXp={player?.total_xp ?? 0}
+        initialCurrentStreak={player?.current_streak ?? 0}
+        initialLongestStreak={player?.longest_streak ?? 0}
+        initialAttributeXp={attributeXp}
         initialHistory={initialHistory}
       />
     </main>

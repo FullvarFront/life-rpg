@@ -20,6 +20,12 @@
   --color-difficulty-medium: #facc15; /* amber */
   --color-difficulty-hard: #f97316; /* orange */
   --color-difficulty-epic: #a855f7; /* purple — яркий */
+
+  /* Характеристики и дисциплина */
+  --color-attr-intellect: #3b82f6; /* синий */
+  --color-attr-strength: #ef4444; /* красный */
+  --color-attr-creativity: #a855f7; /* фиолетовый */
+  --color-streak: #f97316; /* оранжевый — огонь */
 }
 
 @media (prefers-color-scheme: dark) {
