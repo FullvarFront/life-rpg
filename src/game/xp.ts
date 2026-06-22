@@ -1,15 +1,19 @@
 import type { Difficulty } from "@/types/game";
 
-/** Сколько опыта даёт действие каждой сложности. */
-const XP_BY_DIFFICULTY: Record<Difficulty, number> = {
-  trivial: 5,
-  easy: 15,
-  medium: 40,
-  hard: 80,
-  epic: 150,
+/** Допустимый диапазон XP [min, max] для каждой сложности. */
+export const DIFFICULTY_RANGES: Record<Difficulty, [number, number]> = {
+  trivial: [2, 9],
+  easy: [10, 29],
+  medium: [30, 69],
+  hard: [70, 129],
+  epic: [130, 240],
 };
 
-/** Опыт за действие заданной сложности. */
-export function xpForDifficulty(difficulty: Difficulty): number {
-  return XP_BY_DIFFICULTY[difficulty];
+/**
+ * Зажимает xp в диапазон [min, max] выбранной сложности и округляет до целого.
+ * Страховка от значений AI вне диапазона.
+ */
+export function clampXp(difficulty: Difficulty, xp: number): number {
+  const [min, max] = DIFFICULTY_RANGES[difficulty];
+  return Math.round(Math.min(max, Math.max(min, xp)));
 }

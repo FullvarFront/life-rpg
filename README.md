@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Life RPG
 
-## Getting Started
+Веб-приложение, отображающее жизнь как RPG-игру: пользователь вводит действие, AI (Groq) оценивает его сложность и начисляет опыт (XP), прогресс привязан к аккаунту.
 
-First, run the development server:
+## Стек
+Next.js (App Router) + TypeScript (strict) + Tailwind CSS · БД и авторизация: Supabase (Postgres) · AI: Groq (бесплатный tier, модели Llama).
 
+## Статус (MVP 2.0)
+- [x] Каркас проекта (Next.js, TS strict, Tailwind, ESLint)
+- [x] Игровая логика: диапазоны XP, `clampXp`, уровни (+ тесты Vitest)
+- [x] AI-оценщик через Groq с фильтром бессмысленных/негативных действий
+- [x] UI: форма ввода, XP-шкала, история действий
+- [x] Авторизация по email+паролю (Supabase, `@supabase/ssr`)
+- [x] База данных: таблицы `players`/`actions` с RLS, перенос XP и истории в БД
+- [ ] Дальше: профиль/статистика, достижения, оформление
+
+## Запуск
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
 ```
+Нужны переменные окружения (см. `.env.example`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `GROQ_API_KEY`. Реальные значения — в `.env.local` (не коммитится). SQL-схема БД — в [`supabase/schema.sql`](supabase/schema.sql).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Команды
+- `npm run dev` — разработка
+- `npm run build` — сборка
+- `npm run lint` — линтер
+- `npm test` — юнит-тесты игровой логики
+- `npm run test:ai` — массовый прогон AI-оценки по `/api/evaluate` (нужен запущенный `npm run dev`)

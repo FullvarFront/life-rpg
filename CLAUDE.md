@@ -4,7 +4,7 @@
 Веб-приложение, отображающее жизнь как RPG-игру. Пользователь вводит действие, AI (Claude) оценивает его сложность, начисляется опыт (XP).
 
 ## Стек
-Next.js (App Router) + TypeScript (strict) + Tailwind CSS. БД: Supabase (Postgres). AI: Claude API.
+Next.js (App Router) + TypeScript (strict) + Tailwind CSS. БД: Supabase (Postgres). AI: Groq (бесплатный tier, модели Llama) на этапе разработки; провайдер изолирован в src/lib/ai.ts и переключается одной правкой.
 
 ## Архитектура — слои (не смешивать!)
 - src/components/ — UI. Только отображение. Не содержит игровой логики и сетевых запросов.

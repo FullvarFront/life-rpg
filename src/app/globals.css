@@ -12,6 +12,16 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Дизайн-токены проекта (используем как bg-xp, bg-difficulty-hard и т.п.) */
+@theme {
+  --color-xp: #22c55e;
+  --color-difficulty-trivial: #94a3b8; /* slate — спокойный */
+  --color-difficulty-easy: #38bdf8; /* sky */
+  --color-difficulty-medium: #facc15; /* amber */
+  --color-difficulty-hard: #f97316; /* orange */
+  --color-difficulty-epic: #a855f7; /* purple — яркий */
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
